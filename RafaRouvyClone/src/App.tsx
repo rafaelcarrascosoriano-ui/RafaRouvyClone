@@ -11,6 +11,7 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { RouvySimulator } from './components/RouvySimulator';
 import { HardwareModal } from './components/HardwareModal';
 import { SyncServicesModal } from './components/SyncServicesModal';
+import CyclistOverlay from './components/CyclistOverlay';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'simulator'>('welcome');
@@ -156,6 +157,9 @@ export default function App() {
           onOpenSyncModal={handleOpenSyncFromSimulator}
           onExitSession={handleExitSession}
         />
+        {/* Ciclista 3D superpuesto sincronizado con tu cadencia */}
+        <CyclistOverlay cadence={bkoolControllerRef.current?.cadence || 0} />
+      </div>
       )}
 
       {/* Global Hardware & Settings Modal */}

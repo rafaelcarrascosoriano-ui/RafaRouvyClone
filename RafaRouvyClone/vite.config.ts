@@ -4,8 +4,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
+    rolldownOptions: {
+      external: ['three', '@react-three/fiber', '@react-three/drei'],
+    },
     rollupOptions: {
-      // Externzalizamos las librerías 3D para que Rolldown no intente empaquetarlas de forma estricta
       external: ['three', '@react-three/fiber', '@react-three/drei'],
     },
   },

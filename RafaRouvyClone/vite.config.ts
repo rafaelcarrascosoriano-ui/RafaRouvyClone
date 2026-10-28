@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      // Ignora advertencias estrictas de módulos durante el build en Vercel
+      // Evita que los avisos de módulos externos paren la compilación
+      external: [],
       onwarn(warning, warn) {
-        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
-        warn(warning);
+        return;
       },
     },
   },

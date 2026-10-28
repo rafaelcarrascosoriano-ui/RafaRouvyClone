@@ -11,7 +11,6 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { RouvySimulator } from './components/RouvySimulator';
 import { HardwareModal } from './components/HardwareModal';
 import { SyncServicesModal } from './components/SyncServicesModal';
-import CyclistOverlay from './components/CyclistOverlay';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'simulator'>('welcome');
@@ -145,21 +144,18 @@ export default function App() {
       )}
 
       {currentScreen === 'simulator' && activeRoute && (
-        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-          <RouvySimulator
-            route={activeRoute}
-            videoUrl={activeVideoUrl}
-            riderSettings={riderSettings}
-            bkoolController={bkoolControllerRef.current!}
-            hrController={hrControllerRef.current!}
-            trainerStatus={trainerStatus}
-            hrStatus={hrStatus}
-            onOpenHardwareModal={() => setIsHardwareModalOpen(true)}
-            onOpenSyncModal={handleOpenSyncFromSimulator}
-            onExitSession={handleExitSession}
-          />
-          <CyclistOverlay cadence={bkoolControllerRef.current?.cadence || 0} />
-        </div>
+        <RouvySimulator
+          route={activeRoute}
+          videoUrl={activeVideoUrl}
+          riderSettings={riderSettings}
+          bkoolController={bkoolControllerRef.current!}
+          hrController={hrControllerRef.current!}
+          trainerStatus={trainerStatus}
+          hrStatus={hrStatus}
+          onOpenHardwareModal={() => setIsHardwareModalOpen(true)}
+          onOpenSyncModal={handleOpenSyncFromSimulator}
+          onExitSession={handleExitSession}
+        />
       )}
 
       {/* Global Hardware & Settings Modal */}

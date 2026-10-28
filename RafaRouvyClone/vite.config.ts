@@ -5,10 +5,8 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      // Desactiva el modo estricto de errores por avisos de módulos
-      onwarn(warning, defaultHandler) {
-        return;
-      },
+      // Externzalizamos las librerías 3D para que Rolldown no intente empaquetarlas de forma estricta
+      external: ['three', '@react-three/fiber', '@react-three/drei'],
     },
   },
 });

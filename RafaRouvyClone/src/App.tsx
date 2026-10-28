@@ -47,30 +47,26 @@ export default function App() {
   }, []);
 
   // Bkool ANT+ FE-C Controller reference
+  // Bkool ANT+ FE-C Controller reference (Canal exclusivo WebUSB para rodillo)
   const bkoolControllerRef = useRef<BkoolAntFeCController | null>(null);
   if (!bkoolControllerRef.current) {
     bkoolControllerRef.current = new BkoolAntFeCController({
       onData: () => {},
-      onHeartRate: (bpm) => {
-        if (bpm > 0) setSessionHr(bpm);
-      },
       onStatusChange: (status, message) => {
         setTrainerStatus(status);
-        if (message) appendLog(message);
-      },
-      onHrStatusChange: (status, message) => {
-        setHrStatus(status);
         if (message) appendLog(message);
       },
       onLog: (msg) => appendLog(msg),
     });
   }
 
-  // BLE Heart Rate Controller reference
+  // BLE Heart Rate Controller reference (Canal exclusivo Web Bluetooth para pulsómetro)
   const hrControllerRef = useRef<WebBluetoothHrController | null>(null);
   if (!hrControllerRef.current) {
     hrControllerRef.current = new WebBluetoothHrController({
-      onHeartRate: () => {},
+      onHeartRate: (bpm) => {
+        if (bpm > 0) setSessionHr(bpm);
+      },
       onStatusChange: (status, message) => {
         setHrStatus(status);
         if (message) appendLog(message);

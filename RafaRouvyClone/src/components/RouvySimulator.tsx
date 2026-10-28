@@ -32,6 +32,8 @@ import {
   Compass,
   Usb,
   Share2,
+  Maximize,
+  Minimize,
 } from 'lucide-react';
 
 interface RouvySimulatorProps {
@@ -90,6 +92,31 @@ export const RouvySimulator: React.FC<RouvySimulatorProps> = ({
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [showCharts, setShowCharts] = useState<boolean>(false);
   const [lastBkoolGradientSent, setLastBkoolGradientSent] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(
+    Boolean(typeof document !== 'undefined' && document.fullscreenElement)
+  );
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.warn('Pantalla completa no disponible:', err);
+        });
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
 
   // Telemetry samples history for Recharts
   const [telemetrySamples, setTelemetrySamples] = useState<TelemetrySample[]>([]);
@@ -442,6 +469,19 @@ export const RouvySimulator: React.FC<RouvySimulatorProps> = ({
                 {isMuted ? <VolumeX className="w-4 h-4 text-gray-400" /> : <Volume2 className="w-4 h-4 text-cyan-400" />}
               </button>
             )}
+
+            {/* Pantalla Completa Button */}
+            <button
+              onClick={toggleFullscreen}
+              className={`p-2.5 rounded-xl backdrop-blur-xl border transition-all shadow-lg cursor-pointer ${
+                isFullscreen
+                  ? 'bg-cyan-500/30 border-cyan-400 text-cyan-300 hover:bg-cyan-500/40'
+                  : 'bg-black/70 border-white/20 text-white hover:bg-white/20'
+              }`}
+              title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+            >
+              {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+            </button>
 
             <button
               onClick={() =>

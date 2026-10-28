@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { RouteData, HardwareStatus } from '../types/cycling';
 import { parseGpxXml } from '../utils/gpxParser';
 import {
@@ -16,6 +16,8 @@ import {
   Mountain,
   Compass,
   ArrowRight,
+  Maximize,
+  Minimize,
 } from 'lucide-react';
 
 // =========================================================================
@@ -50,6 +52,31 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const [parsedRoute, setParsedRoute] = useState<RouteData | null>(null);
   const [isLoadingGpx, setIsLoadingGpx] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(
+    Boolean(typeof document !== 'undefined' && document.fullscreenElement)
+  );
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.warn('Pantalla completa no disponible:', err);
+        });
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
 
   const videoInputRef = useRef<HTMLInputElement>(null);
   const gpxInputRef = useRef<HTMLInputElement>(null);
@@ -282,10 +309,23 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           {/* Settings modal button */}
           <button
             onClick={onOpenHardwareModal}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-gray-300 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-gray-300 hover:text-white transition-colors cursor-pointer"
             title="Ajustes de hardware y física"
           >
             <Settings className="w-4 h-4" />
+          </button>
+
+          {/* Fullscreen toggle button */}
+          <button
+            onClick={toggleFullscreen}
+            className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+              isFullscreen
+                ? 'bg-cyan-500/30 border-cyan-400 text-cyan-300 hover:bg-cyan-500/40'
+                : 'bg-white/10 hover:bg-white/20 border-white/15 text-gray-300 hover:text-white'
+            }`}
+            title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+          >
+            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
           </button>
         </div>
       </header>

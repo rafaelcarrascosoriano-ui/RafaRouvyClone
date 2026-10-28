@@ -145,21 +145,21 @@ export default function App() {
       )}
 
       {currentScreen === 'simulator' && activeRoute && (
-        <RouvySimulator
-          route={activeRoute}
-          videoUrl={activeVideoUrl}
-          riderSettings={riderSettings}
-          bkoolController={bkoolControllerRef.current!}
-          hrController={hrControllerRef.current!}
-          trainerStatus={trainerStatus}
-          hrStatus={hrStatus}
-          onOpenHardwareModal={() => setIsHardwareModalOpen(true)}
-          onOpenSyncModal={handleOpenSyncFromSimulator}
-          onExitSession={handleExitSession}
-        />
-        {/* Ciclista 3D superpuesto sincronizado con tu cadencia */}
-        <CyclistOverlay cadence={bkoolControllerRef.current?.cadence || 0} />
-      </div>
+        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+          <RouvySimulator
+            route={activeRoute}
+            videoUrl={activeVideoUrl}
+            riderSettings={riderSettings}
+            bkoolController={bkoolControllerRef.current!}
+            hrController={hrControllerRef.current!}
+            trainerStatus={trainerStatus}
+            hrStatus={hrStatus}
+            onOpenHardwareModal={() => setIsHardwareModalOpen(true)}
+            onOpenSyncModal={handleOpenSyncFromSimulator}
+            onExitSession={handleExitSession}
+          />
+          <CyclistOverlay cadence={bkoolControllerRef.current?.cadence || 0} />
+        </div>
       )}
 
       {/* Global Hardware & Settings Modal */}
